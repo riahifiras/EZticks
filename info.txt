@@ -1,0 +1,40 @@
+my-nextjs-app/
+├── .next/                  # Next.js build output
+├── node_modules/           # Node.js modules
+├── public/                 # Static files
+│   ├── images/             # Images
+│   ├── fonts/              # Fonts
+│   └── ...                 # Other static assets
+├── app/                    # Next.js application directory
+│   ├── api/                # API routes
+│   ├── (components)/       # Shared UI components
+│   │   ├── common/         # Common components
+│   │   ├── layout/         # Layout components
+│   │   └── ...             # Other component categories
+│   ├── (hooks)/            # Custom React hooks
+│   ├── (lib)/              # Library code (utilities, helpers)
+│   ├── (services)/         # Service modules (API calls, etc.)
+│   ├── (store)/            # State management (Redux, Zustand, etc.)
+│   ├── (styles)/           # Global and module CSS/SCSS files
+│   ├── (types)/            # TypeScript types
+│   ├── (utils)/            # Utility functions
+│   ├── (config)/           # Configuration files
+│   ├── (context)/          # React context files
+│   ├── (middleware)/       # Middleware functions
+│   ├── (tests)/            # Test files
+│   │   ├── components/     # Component tests
+│   │   ├── pages/          # Page tests
+│   │   └── ...             # Other test categories
+│   ├── layout.js           # Root layout component
+│   ├── page.js             # Root page component
+│   └── ...                 # Other application routes
+├── .env                    # Environment variables
+├── .eslintignore           # ESLint ignore file
+├── .eslintrc.js            # ESLint configuration
+├── .gitignore              # Git ignore file
+├── jsconfig.json           # JavaScript configuration
+├── next.config.js          # Next.js configuration
+├── package.json            # Package configuration
+├── README.md               # Project documentation
+├── tsconfig.json           # TypeScript configuration
+└── yarn.lock               # Yarn lock file
