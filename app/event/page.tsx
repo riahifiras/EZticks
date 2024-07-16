@@ -43,7 +43,7 @@ const Event = () => {
         return <div className="p-4 text-red-600">Error: {error}</div>;
     }
     
-    console.log(data.pics[0]);
+    console.log(data.pic);
     
     
     const tags = [
@@ -55,7 +55,7 @@ const Event = () => {
     return (
         <div className='flex gap-12 flex-col items-start py-12 px-40'>
             <img
-                src={"data:image/jpeg;base64,"+data.pics[0]}
+                src={data.pic}
                 className={"object-cover w-[100%] h-[50vh] rounded-3xl"}
                 alt="Hero Illustration"
             />

@@ -2,10 +2,12 @@ import React from 'react'
 import Image from 'next/image';
 import party from "../assets/images/party.jpg"
 import { IoTicketSharp } from "react-icons/io5";
+import { useRouter } from 'next/navigation'
 
 const EventCard = ({event}) => {
+  const router = useRouter()
   return (
-    <div className='p-4 rounded gap-4 flex h-64'>
+    <div onClick={() => router.push('/event?id='+event.id)} className='p-4 rounded gap-4 flex h-64'>
         <Image
               src={party}
               className={"object-cover w-[50%] h-[90%] rounded-md"}
