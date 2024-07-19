@@ -16,7 +16,12 @@ const links = [
   { name: "Customers", href: "/dashboard/customers"},
 ];
 
-const user = useAuthUser();
+
+
+
+export default function NavLinks() {
+
+  const user = useAuthUser();
     
 
 const pathname = usePathname();
@@ -27,9 +32,6 @@ const pathname = usePathname();
           href: "/dashboard/admins"
       })
   }
-
-
-export default function NavLinks() {
 
   return (
     <>

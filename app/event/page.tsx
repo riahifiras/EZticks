@@ -11,6 +11,61 @@ import { FaRegClock } from "react-icons/fa6";
 import EventSlider from '../components/EventSlider';
 import { useSearchParams } from 'next/navigation';
 
+function formatTimeRange(inputDate, durationHours) {
+    // Create a new Date object from the input date string
+    const startDate = new Date(inputDate);
+  
+    // Calculate end time by adding duration hours to start time
+    const endDate = new Date(startDate.getTime() + durationHours * 60 * 60 * 1000);
+  
+    // Format start time
+    const startHour = startDate.getHours();
+    const startMinute = startDate.getMinutes();
+    const startPeriod = startHour >= 12 ? 'PM' : 'AM';
+    const formattedStart = formatTime(startHour, startMinute) + ' ' + startPeriod;
+  
+    // Format end time
+    const endHour = endDate.getHours();
+    const endMinute = endDate.getMinutes();
+    const endPeriod = endHour >= 12 ? 'PM' : 'AM';
+    const formattedEnd = formatTime(endHour, endMinute) + ' ' + endPeriod;
+  
+    // Construct the time range string
+    const timeRange = `${formattedStart} - ${formattedEnd}`;
+  
+    return timeRange;
+  }
+  
+  // Helper function to format hours and minutes
+  function formatTime(hours, minutes) {
+    return `${hours % 12 || 12}:${minutes.toString().padStart(2, '0')}`;
+  }
+
+  function formatDate(inputDate) {
+    // Create a new Date object from the input date string
+    const date = new Date(inputDate);
+
+    // Define arrays for days and months
+    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 
+                          'July', 'August', 'September', 'October', 'November', 'December'];
+
+    // Get day of the week, day of the month, month, and year from the Date object
+    const dayOfWeek = daysOfWeek[date.getDay()];
+    const dayOfMonth = date.getDate();
+    const month = monthsOfYear[date.getMonth()];
+    const year = date.getFullYear();
+
+    // Format the output as "DayOfWeek, DayOfMonth Month Year"
+    const formattedDate = `${dayOfWeek}, ${dayOfMonth} ${month} ${year}`;
+
+    return formattedDate;
+}
+
+// Example usage:
+const inputDateString = "2023-12-02T00:00:00";  // Assuming the input date string is in ISO format
+const formatted = formatDate(inputDateString);
+console.log(formatted); // Outputs: "Saturday, 2 December 2023"
 
 
 const Event = () => {
@@ -43,7 +98,7 @@ const Event = () => {
         return <div className="p-4 text-red-600">Error: {error}</div>;
     }
     
-    console.log(data.pic);
+    
     
     
     const tags = [
@@ -72,11 +127,11 @@ const Event = () => {
                     <h2 className='py-4 font-semibold text-2xl'>Date and Time</h2>
                     <div className='flex gap-2 items-center'>
                         <MdOutlineCalendarMonth />
-                        <p>Saturday, 2 December 2023</p>
+                        <p>{formatDate(data.datetime)}</p>
                     </div>
                     <div className='flex gap-2 items-center'>
                         <FaRegClock />
-                        <p>6:30 PM - 9:30 PM</p>
+                        <p>{formatTimeRange(data.datetime, data.duration)}</p>
                     </div>
                     <button className='text-[#4539B4]'>+ Add to Calendar</button>
                 </div>
@@ -91,7 +146,7 @@ const Event = () => {
                         </h2>
                         <div className='flex items-center gap-2'>
                             <IoTicketSharp />
-                            Standard Ticket: 20DT each
+                            Standard Ticket: {data.ticketprice}DT each
                         </div>
                     </div>
                 </div>
