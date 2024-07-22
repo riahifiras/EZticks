@@ -15,7 +15,7 @@ export async function middleware(request: NextRequest) {
         if(isOnAdminArea && !user.isAdmin) return NextResponse.redirect(new URL("/dashboard", request.nextUrl));
         return response;
     } else if (user) {
-        return NextResponse.redirect(new URL("/dashboard", request.nextUrl));
+        return NextResponse.redirect(new URL("/", request.nextUrl));
     }
 
 }

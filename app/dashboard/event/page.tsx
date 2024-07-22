@@ -2,13 +2,14 @@
 "use client"
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import party from "../assets/images/party.jpg"
+import party from "../../assets/images/party.jpg"
 import { IoTicketSharp } from "react-icons/io5";
-import { FaRegStar } from "react-icons/fa6";
+import { FaRegStar } from "react-icons/fa";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { MdOutlineCalendarMonth } from "react-icons/md";
-import { FaRegClock } from "react-icons/fa6";
-import EventSlider from '../components/EventSlider';
+import { FaRegClock } from "react-icons/fa";
+import EventSlider from '../../components/EventSlider';
+import TicketPopup from '../../components/TicketPopup';  // Assuming you create TicketPopup component
 import { useSearchParams } from 'next/navigation';
 
 function formatTimeRange(inputDate, durationHours) {
@@ -36,12 +37,12 @@ function formatTimeRange(inputDate, durationHours) {
     return timeRange;
   }
   
-  // Helper function to format hours and minutes
-  function formatTime(hours, minutes) {
+// Helper function to format hours and minutes
+function formatTime(hours, minutes) {
     return `${hours % 12 || 12}:${minutes.toString().padStart(2, '0')}`;
-  }
+}
 
-  function formatDate(inputDate) {
+function formatDate(inputDate) {
     // Create a new Date object from the input date string
     const date = new Date(inputDate);
 
@@ -62,29 +63,26 @@ function formatTimeRange(inputDate, durationHours) {
     return formattedDate;
 }
 
-// Example usage:
-const inputDateString = "2023-12-02T00:00:00";  // Assuming the input date string is in ISO format
-const formatted = formatDate(inputDateString);
-console.log(formatted); // Outputs: "Saturday, 2 December 2023"
-
-
 const Event = () => {
     const searchParams = useSearchParams();
     const id = searchParams.get('id');
 
-    const [data, setData] = useState<Event[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string>("");
+    const [data, setData] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState("");
+
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [ticketCount, setTicketCount] = useState(0);
+    const [showOrderSummary, setShowOrderSummary] = useState(false);
 
     useEffect(() => {
-        // Replace 'your-api-url' with the actual URL
         fetch('https://eea5ym4cdf.execute-api.us-east-1.amazonaws.com/dev/events/'+id)
             .then(response => response.json())
-            .then((data: Event[]) => {
+            .then((data) => {
                 setData(data);
                 setIsLoading(false);
             })
-            .catch((error: Error) => {
+            .catch((error) => {
                 setError(error.message);
                 setIsLoading(false);
             });
@@ -94,25 +92,34 @@ const Event = () => {
         return <div className="p-4">Loading...</div>;
     }
 
-    if (error) {
+    if (error || !data) {
         return <div className="p-4 text-red-600">Error: {error}</div>;
     }
-    
-    
-    
-    
-    const tags = [
-        "Cybersecurity",
-        "CTF",
-        "Competition"
-    ]
+
+    const openPopup = () => {
+        setIsPopupOpen(true);
+    };
+
+    const closePopup = () => {
+        setIsPopupOpen(false);
+        setShowOrderSummary(false); // Reset order summary view on popup close
+    };
+
+    const handleProceed = () => {
+        setShowOrderSummary(true);
+    };
+
+    const handlePayNow = () => {
+        // Implement pay now functionality
+        alert(`Payment functionality to be implemented for ${ticketCount} tickets.`);
+    };
 
     return (
         <div className='flex gap-12 flex-col items-start py-12 px-40'>
             <img
                 src={data.pic}
                 className={"object-cover w-[100%] h-[50vh] rounded-3xl"}
-                alt="Hero Illustration"
+                alt="Event Banner"
             />
             <section className='flex justify-between w-full font-bold text-3xl'>
                 <h1 className=''>{data.title}</h1>
@@ -136,7 +143,7 @@ const Event = () => {
                     <button className='text-[#4539B4]'>+ Add to Calendar</button>
                 </div>
                 <div className='flex flex-col items-end gap-2'>
-                    <button className='rounded-md w-40 h-14 bg-[#FFE047] flex items-center justify-center gap-2'>
+                    <button onClick={openPopup} className='rounded-md w-40 h-14 bg-[#FFE047] flex items-center justify-center gap-2'>
                         <IoTicketSharp />
                         Buy Tickets
                     </button>
@@ -146,7 +153,7 @@ const Event = () => {
                         </h2>
                         <div className='flex items-center gap-2'>
                             <IoTicketSharp />
-                            Standard Ticket: {data.ticketprice}DT each
+                            Standard Ticket: {data.ticketprice} DT each
                         </div>
                     </div>
                 </div>
@@ -163,7 +170,7 @@ const Event = () => {
                     <Image
                         src={party}
                         className={"object-cover w-20 h-20  rounded-full"}
-                        alt="Hero Illustration"
+                        alt="Host Image"
                         loading="eager"
                         placeholder="blur"
                     />
@@ -194,8 +201,21 @@ const Event = () => {
                 <h2 className='py-4 font-semibold text-2xl'>Other events you may like</h2>
                 <EventSlider />
             </section>
-        </div>
-    )
-}
 
-export default Event
+            {/* Popup */}
+            {isPopupOpen && (
+                <TicketPopup
+                    ticketCount={ticketCount}
+                    setTicketCount={setTicketCount}
+                    showOrderSummary={showOrderSummary}
+                    handleProceed={handleProceed}
+                    handlePayNow={handlePayNow}
+                    onClose={closePopup}
+                    data={data}  // Pass event data if needed for order summary
+                />
+            )}
+        </div>
+    );
+};
+
+export default Event;

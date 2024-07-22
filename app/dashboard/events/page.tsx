@@ -1,7 +1,7 @@
 import React from 'react'
-import Header from '../components/Header'
-import FilterSideBar from '../components/FilterSideBar'
-import EventList from '../components/EventList'
+import Header from '../../components/Header'
+import FilterSideBar from '../../components/FilterSideBar'
+import EventList from '../../components/EventList'
 
 
 const EventsPage = () => {

@@ -14,6 +14,7 @@ const links = [
     href: "/dashboard/invoices",
   },
   { name: "Customers", href: "/dashboard/customers"},
+  { name: "events", href: "/dashboard/events"}
 ];
 
 
