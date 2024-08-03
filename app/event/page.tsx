@@ -2,14 +2,14 @@
 "use client"
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import party from "../../assets/images/party.jpg"
+import party from "../assets/images/party.jpg"
 import { IoTicketSharp } from "react-icons/io5";
 import { FaRegStar } from "react-icons/fa";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { MdOutlineCalendarMonth } from "react-icons/md";
 import { FaRegClock } from "react-icons/fa";
-import EventSlider from '../../components/EventSlider';
-import TicketPopup from '../../components/TicketPopup';  // Assuming you create TicketPopup component
+import EventSlider from '../components/EventSlider';
+import TicketPopup from '../components/TicketPopup';  // Assuming you create TicketPopup component
 import { useSearchParams } from 'next/navigation';
 
 function formatTimeRange(inputDate, durationHours) {
