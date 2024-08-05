@@ -28,7 +28,6 @@ export default function RootLayout({
         </div>
         <main className="">
           <div className="mb-16">
-          <Nav/>
           </div>
           {children}
         </main>

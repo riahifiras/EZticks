@@ -12,10 +12,12 @@ import LandingCTA from "./components/LandingCTA";
 import LandingGettingStarted from "./components/LandingGettingStarted";
 import LandingNewsletter from "./components/LandingNewsletter";
 import Footer from "./components/Footer";
+import Nav from "./components/Nav";
 
 export default function Home() {
   return (
     <>
+        <Nav/>
         <LandingHeader/>
         <div className="px-32">
         <LandingCategories/>
