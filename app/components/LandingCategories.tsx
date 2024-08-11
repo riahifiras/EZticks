@@ -1,17 +1,22 @@
 import React from 'react'
-import partyImage from '../assets/images/party.jpg'
+import entertainmentImage from '../assets/images/entertainment.png'
+import educationalImage from '../assets/images/educational.png'
+import culturalImage from '../assets/images/cultural.png'
+import sportsImage from '../assets/images/sports.png'
+import technologyImage from '../assets/images/technology.png'
+import travelImage from '../assets/images/travel.png'
 import LandingCategory from './LandingCategory'
 
 
 const LandingCategories = () => {
 
     const categories = [
-        {categoryImage: partyImage, categoryName: "Entertainment"},
-        {categoryImage: partyImage, categoryName: "Educational & Business"},
-        {categoryImage: partyImage, categoryName: "Cultural & Arts"},
-        {categoryImage: partyImage, categoryName: "Sports & Fitness"},
-        {categoryImage: partyImage, categoryName: "Technology & Innovation"},
-        {categoryImage: partyImage, categoryName: "Travel & Adventure"},
+        {categoryImage: entertainmentImage, categoryName: "Entertainment"},
+        {categoryImage: educationalImage, categoryName: "Educational & Business"},
+        {categoryImage: culturalImage, categoryName: "Cultural & Arts"},
+        {categoryImage: sportsImage, categoryName: "Sports & Fitness"},
+        {categoryImage: technologyImage, categoryName: "Technology & Innovation"},
+        {categoryImage: travelImage, categoryName: "Travel & Adventure"},
     ]
 
   return (

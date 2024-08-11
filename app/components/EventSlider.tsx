@@ -3,6 +3,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Slider from "react-slick";
 import HorizontalEventCard from './HorizontalEventCard';
+import { useEffect, useState } from 'react';
 
 function SampleNextArrow(props) {
     const { className, style, onClick } = props;
@@ -26,6 +27,33 @@ function SampleNextArrow(props) {
     );
   }
 function EventSlider() {
+
+  const [data, setData] = useState<Event[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string>("");
+
+    useEffect(() => {
+        // Replace 'your-api-url' with the actual URL
+        fetch('https://eea5ym4cdf.execute-api.us-east-1.amazonaws.com/dev/events')
+            .then(response => response.json())
+            .then((data: Event[]) => {
+                setData(data);
+                setIsLoading(false);
+            })
+            .catch((error: Error) => {
+                setError(error.message);
+                setIsLoading(false);
+            });
+    }, []);
+
+    if (isLoading) {
+        return <div className="p-4">Loading...</div>;
+    }
+
+    if (error) {
+        return <div className="p-4 text-red-600">Error: {error}</div>;
+    }
+
     const settings = {
       dots: true,
       arrows: true,
@@ -40,12 +68,13 @@ function EventSlider() {
       <div className='w-full'>
         <div className="slider-container">
         <Slider {...settings}>
-            <HorizontalEventCard event={{title: "hi"}}/>
-            <HorizontalEventCard event={{title: "hi"}}/>
-            <HorizontalEventCard event={{title: "hi"}}/>
-            <HorizontalEventCard event={{title: "hi"}}/>
-            <HorizontalEventCard event={{title: "hi"}}/>
-            <HorizontalEventCard event={{title: "hi"}}/>
+        {data.length > 0 ? (
+                data.map((event, index) => <HorizontalEventCard event={event}/>
+                
+                )
+            ) : (
+                <p>No events available.</p>
+            )}
         </Slider>
       </div>
       </div>

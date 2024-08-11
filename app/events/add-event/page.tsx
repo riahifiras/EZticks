@@ -90,6 +90,8 @@ const CreateEventPage = () => {
     e.preventDefault();
     const eventId = uuidv4();
     const eventData = { id: eventId, ...form };
+    console.log(eventData);
+    
 
     try {
       const response = await fetch(
@@ -110,7 +112,6 @@ const CreateEventPage = () => {
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("An error occurred while creating the event");
     }
   };
 

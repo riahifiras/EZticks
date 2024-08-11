@@ -10,17 +10,16 @@ export async function middleware(request: NextRequest) {
     console.log("Authenticated User:", user);
 
     const isOnDashboard = request.nextUrl.pathname.startsWith("/dashboard");
-    const isOnAdminArea = request.nextUrl.pathname.startsWith("/dashboard/admins");
 
-    if (isOnDashboard) {
+    if (isOnDashboard ) {
         if (!user) {
             console.log("User not authenticated, redirecting to login.");
             return NextResponse.redirect(new URL("/auth/login", request.nextUrl));
         }
 
-        if (isOnAdminArea && !user.isAdmin) {
+        if (!user.isAdmin) {
             console.log("User is not admin, redirecting to dashboard.");
-            return NextResponse.redirect(new URL("/dashboard", request.nextUrl));
+            return NextResponse.redirect(new URL("/", request.nextUrl));
         }
 
         console.log("User authenticated, proceeding to dashboard.");

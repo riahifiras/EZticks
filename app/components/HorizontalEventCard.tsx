@@ -8,12 +8,11 @@ import { IoTicketSharp } from "react-icons/io5";
 const HorizonEventCard = ({ event }) => {
     return (
         <div className='px-12 rounded gap-4 flex flex-col h-96'>
-            <Image
-                src={party}
+            <img
+                src={event.pic}
                 className={"object-cover w-full h-[50%] rounded-t-md"}
                 alt="Hero Illustration"
                 loading="eager"
-                placeholder="blur"
             />
             <div className='flex px-4 gap-6 items-center'>
                 <div className='flex flex-col items-center text-center gap-2'>
