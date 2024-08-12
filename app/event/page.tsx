@@ -160,7 +160,7 @@ const Event = () => {
                             </div>
                             <div className='flex items-center gap-2'>
                                 <IoTicketSharp />
-                                Children's rate: {data.ticketprice - data.ticketprice * 0.1} DT each
+                                Children&apos;s rate: {data.ticketprice - data.ticketprice * 0.1} DT each
                             </div>
                         </div>
                     </div>

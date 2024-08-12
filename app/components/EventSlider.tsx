@@ -69,7 +69,7 @@ function EventSlider() {
         <div className="slider-container">
         <Slider {...settings}>
         {data.length > 0 ? (
-                data.map((event, index) => <HorizontalEventCard event={event}/>
+                data.map((event, index) => <HorizontalEventCard key={index} event={event}/>
                 
                 )
             ) : (

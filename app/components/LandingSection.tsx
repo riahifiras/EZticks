@@ -8,7 +8,7 @@ const LandingSection = ({data, title}) => {
       <h1 className='text-3xl pb-4 font-bold'>{title}</h1>
       <div className="grid grid-cols-3 gap-4 p-4">
       {data.length > 0 ? (
-                data.map((event, index) => <HorizontalEventCard event={event}/>
+                data.map((event, index) => <HorizontalEventCard key={index} event={event}/>
                 
                 )
             ) : (

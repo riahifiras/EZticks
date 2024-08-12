@@ -49,7 +49,7 @@ const EventList: React.FC = () => {
     return (
         <div className="w-full h-fit grid grid-cols-2 gap-4 py-4 px-20">
             {data.length > 0 ? (
-                data.map((event, index) => <EventCard event={event}/>
+                data.map((event, index) => <EventCard key={index} event={event}/>
                 
                 )
             ) : (

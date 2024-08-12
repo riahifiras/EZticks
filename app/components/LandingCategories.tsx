@@ -23,7 +23,7 @@ const LandingCategories = () => {
     <div className='flex flex-col gap-12 py-12'>
       <h1 className='text-3xl font-bold'>Explore Categories</h1>
       <div className='flex justify-between px-4'>
-      {categories.map((category, index) => <LandingCategory categoryImage={category.categoryImage} categoryName={category.categoryName}/>)}
+      {categories.map((category, index) => <LandingCategory key={index} categoryImage={category.categoryImage} categoryName={category.categoryName}/>)}
     </div>
     </div>
   )

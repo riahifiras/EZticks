@@ -82,7 +82,7 @@ const TicketPopup = ({ ticketCount, setTicketCount, showOrderSummary, handleProc
                                 className="border border-gray-300 p-2 w-full"
                             >
                                 <option value="Standard rate">Standard rate</option>
-                                <option value="Children's rate">Children's rate</option>
+                                <option value="Children's rate">Children&apos;s rate</option>
                             </select>
                         </div>
                         <input
