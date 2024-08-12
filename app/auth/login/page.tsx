@@ -52,7 +52,7 @@ export default function LoginForm() {
         </div>
         <LoginButton />
         <div className="flex justify-start items-center gap-2 mt-2 ">
-        Don't have an account?
+        Don&apos;t have an account?
           <Link href="/auth/signup" className="cursor-pointer text-blue-500">
             Sign up.
           </Link>
