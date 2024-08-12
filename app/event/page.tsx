@@ -64,10 +64,7 @@ function formatDate(inputDate) {
     return formattedDate;
 }
 
-const Event = () => {
-    const searchParams = useSearchParams();
-    const id = searchParams.get('id');
-
+const EventContent = ({ id }) => {
     const [data, setData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
@@ -87,7 +84,7 @@ const Event = () => {
                 setError(error.message);
                 setIsLoading(false);
             });
-    }, []);
+    }, [id]);
 
     if (isLoading) {
         return <div className="p-4">Loading...</div>;
@@ -116,111 +113,119 @@ const Event = () => {
     };
 
     return (
+        <div className='py-12 flex gap-12 flex-col items-start px-40'>
+            <img
+                src={data.pic}
+                className={"object-cover w-[100%] h-[50vh] rounded-3xl"}
+                alt="Event Banner"
+            />
+            <section className='flex justify-between w-full font-bold text-3xl'>
+                <h1 className=''>{data.title}</h1>
+                <div className='flex gap-4 items-center'>
+                    <FaRegStar />
+                    <IoShareSocialOutline />
+                </div>
+            </section>
+            <section className='flex justify-between w-full'>
+                <div className='flex flex-col items-start gap-2'>
+                    <h2 className='py-4 font-semibold text-2xl'>Date and Time</h2>
+                    <div className='flex gap-2 items-center'>
+                        <MdOutlineCalendarMonth />
+                        <p>{formatDate(data.datetime)}</p>
+                    </div>
+                    <div className='flex gap-2 items-center'>
+                        <FaRegClock />
+                        <p>{formatTimeRange(data.datetime, data.duration)}</p>
+                    </div>
+                    <button className='text-[#4539B4]'>+ Add to Calendar</button>
+                </div>
+                <div className='flex flex-col items-end gap-2'>
+                    <button onClick={openPopup} className='rounded-md w-40 h-14 bg-[#FFE047] flex items-center justify-center gap-2'>
+                        <IoTicketSharp />
+                        Buy Tickets
+                    </button>
+                    <div>
+                        <h2 className='py-4 font-semibold text-2xl'>
+                            Ticket Information
+                        </h2>
+                        <div className='flex items-center gap-2'>
+                            <IoTicketSharp />
+                            Standard rate: {data.ticketprice} DT each
+                        </div>
+                        <div className='flex items-center gap-2'>
+                            <IoTicketSharp />
+                            Children&apos;s rate: {data.ticketprice - data.ticketprice * 0.1} DT each
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <h2 className='py-4 font-semibold text-2xl'>Location</h2>
+                <div>
+                    123 Ariana street, Ariana, Tunisia
+                </div>
+            </section>
+            <section>
+                <h2 className='py-4 font-semibold text-2xl'>Hosted by</h2>
+                <div className='flex items-center gap-4'>
+                    <Image
+                        src={party}
+                        className={"object-cover w-20 h-20  rounded-full"}
+                        alt="Host Image"
+                        loading="eager"
+                        placeholder="blur"
+                    />
+                    <div className='flex flex-col gap-2'>
+                        <p>City Youth Movement</p>
+                        <div className='flex gap-2'>
+                            <button className='px-3 py-1 border-2 border-[#2B293D] rounded-md'>Contact</button>
+                            <button className='px-3 py-1 text-white bg-[#2B293D] rounded-md'>+ Follow</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <h2 className='py-4 font-semibold text-2xl'>Event Description</h2>
+                <p>{data.description}</p>
+            </section>
+            <section>
+                <h2 className='py-4 font-semibold text-2xl'>Tags</h2>
+                <div className='flex gap-2'>
+                    {data.tags.map((element, index) => {
+                        return (
+                            <div className='bg-[#eae9eb] py-1 px-2 rounded-md' key={index}>{element}</div>
+                        )
+                    })}
+                </div>
+            </section>
+            <section className='w-full'>
+                <h2 className='py-4 font-semibold text-2xl'>Other events you may like</h2>
+                <EventSlider />
+            </section>
+
+            {/* Popup */}
+            {isPopupOpen && (
+                <TicketPopup
+                    ticketCount={ticketCount}
+                    setTicketCount={setTicketCount}
+                    showOrderSummary={showOrderSummary}
+                    handleProceed={handleProceed}
+                    onClose={closePopup}
+                    data={data}  // Pass event data if needed for order summary
+                />
+            )}
+        </div>
+    );
+};
+
+const Event = () => {
+    const searchParams = useSearchParams();
+    const id = searchParams.get('id');
+
+    return (
         <Suspense fallback={<div>Loading...</div>}>
             <Nav />
-            <div className='py-12 flex gap-12 flex-col items-start px-40'>
-                <img
-                    src={data.pic}
-                    className={"object-cover w-[100%] h-[50vh] rounded-3xl"}
-                    alt="Event Banner"
-                />
-                <section className='flex justify-between w-full font-bold text-3xl'>
-                    <h1 className=''>{data.title}</h1>
-                    <div className='flex gap-4 items-center'>
-                        <FaRegStar />
-                        <IoShareSocialOutline />
-                    </div>
-                </section>
-                <section className='flex justify-between w-full'>
-
-                    <div className='flex flex-col items-start gap-2'>
-                        <h2 className='py-4 font-semibold text-2xl'>Date and Time</h2>
-                        <div className='flex gap-2 items-center'>
-                            <MdOutlineCalendarMonth />
-                            <p>{formatDate(data.datetime)}</p>
-                        </div>
-                        <div className='flex gap-2 items-center'>
-                            <FaRegClock />
-                            <p>{formatTimeRange(data.datetime, data.duration)}</p>
-                        </div>
-                        <button className='text-[#4539B4]'>+ Add to Calendar</button>
-                    </div>
-                    <div className='flex flex-col items-end gap-2'>
-                        <button onClick={openPopup} className='rounded-md w-40 h-14 bg-[#FFE047] flex items-center justify-center gap-2'>
-                            <IoTicketSharp />
-                            Buy Tickets
-                        </button>
-                        <div>
-                            <h2 className='py-4 font-semibold text-2xl'>
-                                Ticket Information
-                            </h2>
-                            <div className='flex items-center gap-2'>
-                                <IoTicketSharp />
-                                Standard rate: {data.ticketprice} DT each
-                            </div>
-                            <div className='flex items-center gap-2'>
-                                <IoTicketSharp />
-                                Children&apos;s rate: {data.ticketprice - data.ticketprice * 0.1} DT each
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                <section>
-                    <h2 className='py-4 font-semibold text-2xl'>Location</h2>
-                    <div>
-                        123 Ariana street, Ariana, Tunisia
-                    </div>
-                </section>
-                <section>
-                    <h2 className='py-4 font-semibold text-2xl'>Hosted by</h2>
-                    <div className='flex items-center gap-4'>
-                        <Image
-                            src={party}
-                            className={"object-cover w-20 h-20  rounded-full"}
-                            alt="Host Image"
-                            loading="eager"
-                            placeholder="blur"
-                        />
-                        <div className='flex flex-col gap-2'>
-                            <p>City Youth Movement</p>
-                            <div className='flex gap-2'>
-                                <button className='px-3 py-1 border-2 border-[#2B293D] rounded-md'>Contact</button>
-                                <button className='px-3 py-1 text-white bg-[#2B293D] rounded-md'>+ Follow</button>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                <section>
-                    <h2 className='py-4 font-semibold text-2xl'>Event Description</h2>
-                    <p>{data.description}</p>
-                </section>
-                <section>
-                    <h2 className='py-4 font-semibold text-2xl'>Tags</h2>
-                    <div className='flex gap-2'>
-                        {data.tags.map((element, index) => {
-                            return (
-                                <div className='bg-[#eae9eb] py-1 px-2 rounded-md' key={index}>{element}</div>
-                            )
-                        })}
-                    </div>
-                </section>
-                <section className='w-full'>
-                    <h2 className='py-4 font-semibold text-2xl'>Other events you may like</h2>
-                    <EventSlider />
-                </section>
-
-                {/* Popup */}
-                {isPopupOpen && (
-                    <TicketPopup
-                        ticketCount={ticketCount}
-                        setTicketCount={setTicketCount}
-                        showOrderSummary={showOrderSummary}
-                        handleProceed={handleProceed}
-                        onClose={closePopup}
-                        data={data}  // Pass event data if needed for order summary
-                    />
-                )}
-            </div>
+            <EventContent id={id} />
         </Suspense>
     );
 };
