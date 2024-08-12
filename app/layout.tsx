@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import "./styles/globals.css";
 
 import Nav from "./components/Nav";
-import Provider from "./components/Provider";
 import ConfigureAmplifyClientSide from "./amplify-cognito-config";
 
 const inter = Inter({ subsets: ["latin"] });
