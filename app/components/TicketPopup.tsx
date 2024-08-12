@@ -4,6 +4,9 @@ import '@react-pdf-viewer/core/lib/styles/index.css';
 import useAuthUser from '../hooks/use-auth-user';
 
 const TicketPopup = ({ ticketCount, setTicketCount, showOrderSummary, handleProceed, onClose, data }) => {
+
+    
+
     const user = useAuthUser();
     const [showAuthPrompt, setShowAuthPrompt] = useState(false);
     const [ticketType, setTicketType] = useState('Standard rate');
@@ -115,7 +118,8 @@ const TicketPopup = ({ ticketCount, setTicketCount, showOrderSummary, handleProc
                     <>
                         <h2 className="text-xl font-semibold mb-4">Ticket PDF</h2>
                         <Worker workerUrl={`https://unpkg.com/pdfjs-dist@2.7.570/build/pdf.worker.min.js`}>
-                            <Viewer fileUrl={pdfUrl} className="w-full h-64 mb-4 border" />
+                        <div className="w-full h-64 mb-4 border" ><Viewer fileUrl={pdfUrl} /></div> 
+                            
                         </Worker>
                         <a
                             href={pdfUrl}
