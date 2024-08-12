@@ -1,6 +1,6 @@
 
 "use client"
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Image from 'next/image';
 import party from "../assets/images/party.jpg"
 import { IoTicketSharp } from "react-icons/io5";
@@ -116,7 +116,7 @@ const Event = () => {
     };
 
     return (
-        <>
+        <Suspense fallback={<div>Loading...</div>}>
             <Nav />
             <div className='py-12 flex gap-12 flex-col items-start px-40'>
                 <img
@@ -221,7 +221,7 @@ const Event = () => {
                     />
                 )}
             </div>
-        </>
+        </Suspense>
     );
 };
 
