@@ -17,7 +17,6 @@
     "next": "14.2.4",
     "next-auth": "^4.24.7",
     "next-themes": "^0.3.0",
-    "pdfjs-dist": "^2.7.570",
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^5.2.1",
