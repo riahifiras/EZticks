@@ -54,7 +54,7 @@ const Nav = () => {
         <div className="flex gap-4 md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           {user ? 
           <div className="flex gap-4 items-center relative">
-            <Link href="#" className="flex flex-col justify-center items-center text-white gap-1">
+            <Link href="/tickets" className="flex flex-col justify-center items-center text-white gap-1">
               <div className="text-2xl">
               <IoTicketOutline/>
               </div>

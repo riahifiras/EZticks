@@ -2,12 +2,14 @@ import React from 'react'
 import Image from 'next/image';
 import party from "../assets/images/party.jpg"
 import { IoTicketSharp } from "react-icons/io5";
+import { useRouter } from 'next/navigation'
 
 
 
 const HorizonEventCard = ({ event }) => {
+    const router = useRouter()
     return (
-        <div className='px-12 rounded gap-4 flex flex-col h-96'>
+        <div onClick={() => router.push('event?id='+event.id)} className='px-12 rounded gap-4 flex flex-col h-96'>
             <img
                 src={event.pic}
                 className={"object-cover w-full h-[50%] rounded-t-md"}

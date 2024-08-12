@@ -10,6 +10,15 @@ export async function middleware(request: NextRequest) {
     console.log("Authenticated User:", user);
 
     const isOnDashboard = request.nextUrl.pathname.startsWith("/dashboard");
+    const isOnTickets = request.nextUrl.pathname.startsWith("/tickets");
+
+    if (isOnTickets ) {
+        if (!user) {
+            console.log("User not authenticated, redirecting to login.");
+            return NextResponse.redirect(new URL("/auth/login", request.nextUrl));
+        }
+        return response;
+    }
 
     if (isOnDashboard ) {
         if (!user) {

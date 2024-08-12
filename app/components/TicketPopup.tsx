@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Worker, Viewer } from '@react-pdf-viewer/core';
+import '@react-pdf-viewer/core/lib/styles/index.css';
 import useAuthUser from '../hooks/use-auth-user';
 
 const TicketPopup = ({ ticketCount, setTicketCount, showOrderSummary, handleProceed, onClose, data }) => {
     const user = useAuthUser();
-    const [showAuthPrompt, setShowAuthPrompt] = React.useState(false);
-    const [ticketType, setTicketType] = React.useState('Standard rate');
+    const [showAuthPrompt, setShowAuthPrompt] = useState(false);
+    const [ticketType, setTicketType] = useState('Standard rate');
+    const [pdfUrl, setPdfUrl] = useState(null);
 
     const proceedClicked = () => {
         if (!user) {
@@ -39,9 +42,11 @@ const TicketPopup = ({ ticketCount, setTicketCount, showOrderSummary, handleProc
         });
 
         try {
-            await Promise.all(requests);
+            const responses = await Promise.all(requests);
+            const responseData = await Promise.all(responses.map(response => response.json()));
+            const pdfUrl = responseData[0].pdfUrl; // assuming the response is consistent
+            setPdfUrl(pdfUrl);
             alert('Tickets purchased successfully!');
-            onClose();
         } catch (error) {
             console.error('Error purchasing tickets:', error);
             alert('There was an error processing your request. Please try again.');
@@ -66,7 +71,7 @@ const TicketPopup = ({ ticketCount, setTicketCount, showOrderSummary, handleProc
                             Close
                         </button>
                     </>
-                ) : !showOrderSummary ? (
+                ) : !showOrderSummary && !pdfUrl ? (
                     <>
                         <h2 className="text-xl font-semibold mb-4">Select Number of Tickets</h2>
                         <div className="mb-4">
@@ -93,7 +98,7 @@ const TicketPopup = ({ ticketCount, setTicketCount, showOrderSummary, handleProc
                             Cancel
                         </button>
                     </>
-                ) : (
+                ) : !pdfUrl ? (
                     <>
                         <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
                         <p>Selected Tickets: {ticketCount}</p>
@@ -103,6 +108,23 @@ const TicketPopup = ({ ticketCount, setTicketCount, showOrderSummary, handleProc
                             Pay Now
                         </button>
                         <button onClick={onClose} className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md mt-2">
+                            Close
+                        </button>
+                    </>
+                ) : (
+                    <>
+                        <h2 className="text-xl font-semibold mb-4">Ticket PDF</h2>
+                        <Worker workerUrl={`https://unpkg.com/pdfjs-dist@2.7.570/build/pdf.worker.min.js`}>
+                            <Viewer fileUrl={pdfUrl} className="w-full h-64 mb-4 border" />
+                        </Worker>
+                        <a
+                            href={pdfUrl}
+                            download
+                            className="bg-green-500 text-white px-4 py-2 rounded-md"
+                        >
+                            Download PDF
+                        </a>
+                        <button onClick={onClose} className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md mt-4">
                             Close
                         </button>
                     </>
