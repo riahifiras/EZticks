@@ -36,7 +36,6 @@ export async function middleware(request: NextRequest) {
     }
 
     if (user) {
-        // Redirect authenticated users away from login and auth pages
         const isAuthPage = request.nextUrl.pathname.startsWith("/auth");
         if (isAuthPage) {
             console.log("User already authenticated, redirecting to home.");

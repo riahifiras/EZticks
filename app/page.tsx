@@ -18,11 +18,11 @@ import { useEffect, useState } from "react";
 export interface Event {
   title: string;
   description: string;
-  dateTime: string;  // Assuming dateTime is a string in ISO format
-  hostId: number;
+  dateTime: string;  
+  hostName: string;
   ticketPrice: number;
   slots: number;
-  pics: string[];  // Assuming pics is an array of strings (URLs)
+  pics: string[];  
   discount: number;
   tags: string[];
   id: string;
@@ -34,7 +34,6 @@ export default function Home() {
     const [error, setError] = useState<string>("");
 
     useEffect(() => {
-        // Replace 'your-api-url' with the actual URL
         fetch('https://eea5ym4cdf.execute-api.us-east-1.amazonaws.com/dev/events')
             .then(response => response.json())
             .then((data: Event[]) => {

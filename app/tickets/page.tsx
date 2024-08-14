@@ -4,15 +4,20 @@ import Nav from '../components/Nav';
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { Worker, Viewer } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
+import useAuthUser from '../hooks/use-auth-user';
 
 const TicketsPage = () => {
     const [data, setData] = useState([]);
     const [error, setError] = useState('');
-    const [isLoading, setIsLoading] = useState(true); // Set to true initially
+    const [isLoading, setIsLoading] = useState(true); 
     const [expandedTicket, setExpandedTicket] = useState<number | null>(null);
 
+    const usr = useAuthUser();
+
+
+
     useEffect(() => {
-        fetch('https://zkyeza1yt2.execute-api.us-east-1.amazonaws.com/dev/user?userId=6448f4b8-e011-70f0-2e45-6bf7520bbf64')
+        fetch(`https://zkyeza1yt2.execute-api.us-east-1.amazonaws.com/dev/user?userId=${usr?.userId}`)
             .then(response => response.json())
             .then((data) => {
                 setData(data);
@@ -22,7 +27,7 @@ const TicketsPage = () => {
                 setError(error.message);
                 setIsLoading(false);
             });
-    }, []);
+    }, [usr]);
 
     if (isLoading) {
         return <div className="p-4">Loading...</div>;
@@ -40,10 +45,22 @@ const TicketsPage = () => {
         link.click();
     };
 
-    const handleDelete = (id: number) => {
-        // Implement the function to delete the entry from the database
-        console.log(`Delete ticket with id: ${id}`);
-    };
+    const handleDelete = (id) => {
+        const deleteUrl = `https://zkyeza1yt2.execute-api.us-east-1.amazonaws.com/dev/tickets/${id}`;
+        
+        fetch(deleteUrl, {
+            method: 'DELETE',
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to delete the event.');
+            }
+            setData(prevData => prevData.filter(event => event.id !== id));
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+      };
 
     return (
         <div>

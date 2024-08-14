@@ -1,8 +1,10 @@
-"use client"
+"use client";
 import React, { useState, useEffect } from 'react';
 
 const TicketsTable = () => {
   const [tickets, setTickets] = useState([]);
+  const [editId, setEditId] = useState(null);
+  const [updatedTicket, setUpdatedTicket] = useState({});
 
   useEffect(() => {
     const fetchTickets = async () => {
@@ -18,20 +20,60 @@ const TicketsTable = () => {
     fetchTickets();
   }, []);
 
-  const updateTicket = async (id, updatedTicket) => {
+  const handleEdit = (id, ticket) => {
+    setEditId(id);
+    setUpdatedTicket(ticket);
+  };
+
+  const handleSave = async (id) => {
+    const putUrl = `https://zkyeza1yt2.execute-api.us-east-1.amazonaws.com/dev/tickets/${id}`;
+
     try {
-      setTickets(tickets.map(ticket => ticket.id === id ? updatedTicket : ticket));
+      const response = await fetch(putUrl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedTicket),
+      });
+
+      if (response.ok) {
+        console.log('Update successful:', response);
+        setTickets(tickets.map(ticket => ticket.id === id ? updatedTicket : ticket));
+        setEditId(null);
+      } else {
+        console.error('Error updating ticket:', response.statusText);
+      }
     } catch (error) {
       console.error('Error updating ticket:', error);
     }
   };
 
-  const deleteTicket = async (id) => {
-    try {
-      setTickets(tickets.filter(ticket => ticket.id !== id));
-    } catch (error) {
-      console.error('Error deleting ticket:', error);
-    }
+  const handleCancel = () => {
+    setEditId(null);
+    setUpdatedTicket({});
+  };
+
+  const handleFieldChange = (e) => {
+    const { name, value } = e.target;
+    setUpdatedTicket({ ...updatedTicket, [name]: value });
+  };
+
+  const handleDelete = (id) => {
+    const deleteUrl = `https://zkyeza1yt2.execute-api.us-east-1.amazonaws.com/dev/tickets/${id}`;
+    
+    fetch(deleteUrl, {
+        method: 'DELETE',
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to delete the ticket.');
+        }
+        setTickets(prevData => prevData.filter(ticket => ticket.id !== id));
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
   };
 
   return (
@@ -40,31 +82,108 @@ const TicketsTable = () => {
       <table className="min-w-full bg-white border border-gray-300 rounded-lg">
         <thead>
           <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-            <th className="py-3 px-6 text-left">Event Name</th>
-            <th className="py-3 px-6 text-left">Rate</th>
-            <th className="py-3 px-6 text-left">Issue Date</th>
-            <th className="py-3 px-6 text-left">User Name</th>
-            <th className="py-3 px-6 text-left">Ticket Price</th>
-            <th className="py-3 px-6 text-center">Actions</th>
+            <th className="py-3 px-3 text-left">Event Name</th>
+            <th className="py-3 px-3 text-left">Rate</th>
+            <th className="py-3 px-3 text-left">Issue Date</th>
+            <th className="py-3 px-3 text-left">User Name</th>
+            <th className="py-3 px-3 text-left">Ticket Price</th>
+            <th className="py-3 px-3 text-center">Actions</th>
           </tr>
         </thead>
         <tbody className="text-gray-600 text-sm font-light">
           {tickets.map(ticket => (
             <tr key={ticket.id} className="border-b border-gray-200 hover:bg-gray-100">
-              <td className="py-3 px-6 text-left whitespace-nowrap">{ticket.eventName}</td>
-              <td className="py-3 px-6 text-left">{ticket.rate}</td>
-              <td className="py-3 px-6 text-left">{new Date(ticket.issueDate).toLocaleDateString()}</td>
-              <td className="py-3 px-6 text-left">{ticket.userName}</td>
-              <td className="py-3 px-6 text-left">${ticket.ticketPrice}</td>
-              <td className="py-3 px-6 text-center">
+              <td className="py-3 px-3 text-left whitespace-nowrap">
+                {editId === ticket.id ? (
+                  <input
+                    type="text"
+                    name="eventName"
+                    value={updatedTicket.eventName || ""}
+                    onChange={handleFieldChange}
+                    className="border border-gray-300 rounded p-1"
+                  />
+                ) : (
+                  ticket.eventName
+                )}
+              </td>
+              <td className="py-3 px-3 text-left">
+                {editId === ticket.id ? (
+                  <input
+                    type="text"
+                    name="rate"
+                    value={updatedTicket.rate || ""}
+                    onChange={handleFieldChange}
+                    className="border border-gray-300 rounded p-1"
+                  />
+                ) : (
+                  ticket.rate
+                )}
+              </td>
+              <td className="py-3 px-3 text-left">
+                {editId === ticket.id ? (
+                  <input
+                    type="date"
+                    name="issueDate"
+                    value={new Date(updatedTicket.issueDate).toISOString().substr(0, 10) || ""}
+                    onChange={handleFieldChange}
+                    className="border border-gray-300 rounded p-1"
+                  />
+                ) : (
+                  new Date(ticket.issueDate).toLocaleDateString()
+                )}
+              </td>
+              <td className="py-3 px-3 text-left">
+                {editId === ticket.id ? (
+                  <input
+                    type="text"
+                    name="userName"
+                    value={updatedTicket.userName || ""}
+                    onChange={handleFieldChange}
+                    className="border border-gray-300 rounded p-1"
+                  />
+                ) : (
+                  ticket.userName
+                )}
+              </td>
+              <td className="py-3 px-3 text-left">
+                {editId === ticket.id ? (
+                  <input
+                    type="number"
+                    name="ticketPrice"
+                    value={updatedTicket.ticketPrice || ""}
+                    onChange={handleFieldChange}
+                    className="border border-gray-300 rounded p-1"
+                  />
+                ) : (
+                  `$${ticket.ticketPrice}`
+                )}
+              </td>
+              <td className="py-3 px-3 text-center">
+                {editId === ticket.id ? (
+                  <div>
+                    <button 
+                      onClick={() => handleSave(ticket.id)} 
+                      className="bg-green-500 text-white py-1 px-3 rounded mr-2"
+                    >
+                      Save
+                    </button>
+                    <button 
+                      onClick={handleCancel} 
+                      className="bg-gray-500 text-white py-1 px-3 rounded"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <button 
+                    onClick={() => handleEdit(ticket.id, ticket)} 
+                    className="bg-blue-500 text-white py-1 px-3 rounded mr-2"
+                  >
+                    Edit
+                  </button>
+                )}
                 <button 
-                  onClick={() => updateTicket(ticket.id, ticket)} 
-                  className="bg-blue-500 text-white py-1 px-3 rounded mr-2"
-                >
-                  Edit
-                </button>
-                <button 
-                  onClick={() => deleteTicket(ticket.id)} 
+                  onClick={() => handleDelete(ticket.id)} 
                   className="bg-red-500 text-white py-1 px-3 rounded"
                 >
                   Delete

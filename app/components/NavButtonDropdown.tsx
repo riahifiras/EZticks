@@ -7,21 +7,7 @@ const NavButtonDropdown = ({ label, items, isOpen, toggleDropdown }) => {
         onClick={toggleDropdown}
       >
         {label}
-        <svg
-          className="w-2.5 h-2.5 ms-2.5"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 10 6"
-        >
-          <path
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="m1 1 4 4 4-4"
-          />
-        </svg>
+        
       </button>
       <div
         className={`z-10 ${isOpen ? 'block' : 'hidden'} absolute translate-y-4 font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600`}

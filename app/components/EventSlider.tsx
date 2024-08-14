@@ -33,7 +33,6 @@ function EventSlider() {
     const [error, setError] = useState<string>("");
 
     useEffect(() => {
-        // Replace 'your-api-url' with the actual URL
         fetch('https://eea5ym4cdf.execute-api.us-east-1.amazonaws.com/dev/events')
             .then(response => response.json())
             .then((data: Event[]) => {
@@ -53,6 +52,8 @@ function EventSlider() {
     if (error) {
         return <div className="p-4 text-red-600">Error: {error}</div>;
     }
+
+    
 
     const settings = {
       dots: true,

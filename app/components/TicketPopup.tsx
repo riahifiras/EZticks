@@ -23,7 +23,7 @@ const TicketPopup = ({ ticketCount, setTicketCount, showOrderSummary, handleProc
     const handlePayNow = async () => {
         const url = "https://zkyeza1yt2.execute-api.us-east-1.amazonaws.com/dev/tickets";
         const issueDate = new Date().toISOString();
-        const ticketPrice = ticketType === 'Standard rate' ? data.ticketprice : data.ticketprice - data.ticketprice * 0.1;
+        const ticketPrice = ticketType === 'Standard rate' ? data.ticketprice : data.ticketprice - (data.discount / 100) * data.ticketPrice;
 
         const requests = Array.from({ length: ticketCount }, () => {
             return fetch(url, {
@@ -36,7 +36,7 @@ const TicketPopup = ({ ticketCount, setTicketCount, showOrderSummary, handleProc
                     userId: user.userId,
                     eventId: data.id,
                     eventName: data.title,
-                    hostId: data.hostid,
+                    hostName: data.hostName,
                     issueDate: issueDate,
                     rate: ticketType,
                     ticketPrice: ticketPrice
@@ -47,7 +47,7 @@ const TicketPopup = ({ ticketCount, setTicketCount, showOrderSummary, handleProc
         try {
             const responses = await Promise.all(requests);
             const responseData = await Promise.all(responses.map(response => response.json()));
-            const pdfUrl = responseData[0].pdfUrl; // assuming the response is consistent
+            const pdfUrl = responseData[0].pdfUrl; 
             setPdfUrl(pdfUrl);
             alert('Tickets purchased successfully!');
         } catch (error) {
@@ -85,13 +85,15 @@ const TicketPopup = ({ ticketCount, setTicketCount, showOrderSummary, handleProc
                                 className="border border-gray-300 p-2 w-full"
                             >
                                 <option value="Standard rate">Standard rate</option>
-                                <option value="Children's rate">Children&apos;s rate</option>
+                                {data.discount !== 0 ? <option value="Children's rate">Children&apos;s rate</option> : <></>}
+                                
                             </select>
                         </div>
                         <input
                             type="number"
                             className="border border-gray-300 p-2 mb-4 w-full"
                             value={ticketCount}
+                            min={1}
                             onChange={(e) => setTicketCount(parseInt(e.target.value))}
                         />
                         <button onClick={proceedClicked} className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2">

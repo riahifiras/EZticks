@@ -9,56 +9,50 @@ import { IoShareSocialOutline } from "react-icons/io5";
 import { MdOutlineCalendarMonth } from "react-icons/md";
 import { FaRegClock } from "react-icons/fa";
 import EventSlider from '../components/EventSlider';
-import TicketPopup from '../components/TicketPopup';  // Assuming you create TicketPopup component
+import TicketPopup from '../components/TicketPopup';
 import { useSearchParams } from 'next/navigation';
 import Nav from '../components/Nav';
+import Link from 'next/link';
 
 function formatTimeRange(inputDate, durationHours) {
-    // Create a new Date object from the input date string
     const startDate = new Date(inputDate);
 
-    // Calculate end time by adding duration hours to start time
     const endDate = new Date(startDate.getTime() + durationHours * 60 * 60 * 1000);
 
-    // Format start time
+
     const startHour = startDate.getHours();
     const startMinute = startDate.getMinutes();
     const startPeriod = startHour >= 12 ? 'PM' : 'AM';
     const formattedStart = formatTime(startHour, startMinute) + ' ' + startPeriod;
 
-    // Format end time
+
     const endHour = endDate.getHours();
     const endMinute = endDate.getMinutes();
     const endPeriod = endHour >= 12 ? 'PM' : 'AM';
     const formattedEnd = formatTime(endHour, endMinute) + ' ' + endPeriod;
 
-    // Construct the time range string
+
     const timeRange = `${formattedStart} - ${formattedEnd}`;
 
     return timeRange;
 }
 
-// Helper function to format hours and minutes
 function formatTime(hours, minutes) {
     return `${hours % 12 || 12}:${minutes.toString().padStart(2, '0')}`;
 }
 
 function formatDate(inputDate) {
-    // Create a new Date object from the input date string
     const date = new Date(inputDate);
 
-    // Define arrays for days and months
     const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'];
 
-    // Get day of the week, day of the month, month, and year from the Date object
     const dayOfWeek = daysOfWeek[date.getDay()];
     const dayOfMonth = date.getDate();
     const month = monthsOfYear[date.getMonth()];
     const year = date.getFullYear();
 
-    // Format the output as "DayOfWeek, DayOfMonth Month Year"
     const formattedDate = `${dayOfWeek}, ${dayOfMonth} ${month} ${year}`;
 
     return formattedDate;
@@ -70,7 +64,7 @@ const EventContent = ({ id }) => {
     const [error, setError] = useState("");
 
     const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const [ticketCount, setTicketCount] = useState(0);
+    const [ticketCount, setTicketCount] = useState(1);
     const [showOrderSummary, setShowOrderSummary] = useState(false);
 
     useEffect(() => {
@@ -100,17 +94,15 @@ const EventContent = ({ id }) => {
 
     const closePopup = () => {
         setIsPopupOpen(false);
-        setShowOrderSummary(false); // Reset order summary view on popup close
+        setShowOrderSummary(false);
     };
 
     const handleProceed = () => {
         setShowOrderSummary(true);
     };
 
-    const handlePayNow = () => {
-        // Implement pay now functionality
-        alert(`Payment functionality to be implemented for ${ticketCount} tickets.`);
-    };
+    console.log(data.discount);
+
 
     return (
         <div className='py-12 flex gap-12 flex-col items-start px-40'>
@@ -137,7 +129,6 @@ const EventContent = ({ id }) => {
                         <FaRegClock />
                         <p>{formatTimeRange(data.datetime, data.duration)}</p>
                     </div>
-                    <button className='text-[#4539B4]'>+ Add to Calendar</button>
                 </div>
                 <div className='flex flex-col items-end gap-2'>
                     <button onClick={openPopup} className='rounded-md w-40 h-14 bg-[#FFE047] flex items-center justify-center gap-2'>
@@ -152,36 +143,24 @@ const EventContent = ({ id }) => {
                             <IoTicketSharp />
                             Standard rate: {data.ticketprice} DT each
                         </div>
-                        <div className='flex items-center gap-2'>
+                        {data.discount !== 0 ? <div className='flex items-center gap-2'>
                             <IoTicketSharp />
-                            Children&apos;s rate: {data.ticketprice - data.ticketprice * 0.1} DT each
-                        </div>
+                            Children&apos;s rate: {data.ticketprice - data.ticketprice * (data.discount / 100)} DT each
+                        </div> : <></>}
+
                     </div>
                 </div>
             </section>
             <section>
                 <h2 className='py-4 font-semibold text-2xl'>Location</h2>
                 <div>
-                    123 Ariana street, Ariana, Tunisia
+                    {data.location}
                 </div>
             </section>
             <section>
                 <h2 className='py-4 font-semibold text-2xl'>Hosted by</h2>
                 <div className='flex items-center gap-4'>
-                    <Image
-                        src={party}
-                        className={"object-cover w-20 h-20  rounded-full"}
-                        alt="Host Image"
-                        loading="eager"
-                        placeholder="blur"
-                    />
-                    <div className='flex flex-col gap-2'>
-                        <p>City Youth Movement</p>
-                        <div className='flex gap-2'>
-                            <button className='px-3 py-1 border-2 border-[#2B293D] rounded-md'>Contact</button>
-                            <button className='px-3 py-1 text-white bg-[#2B293D] rounded-md'>+ Follow</button>
-                        </div>
-                    </div>
+                    <p>{data.hostName}</p>
                 </div>
             </section>
             <section>
@@ -198,12 +177,23 @@ const EventContent = ({ id }) => {
                     })}
                 </div>
             </section>
+            <section>
+                <h2 className='py-4 font-semibold text-2xl'>Links</h2>
+                <div className='flex flex-col gap-2'>
+                    {data.links.map((element, index) => {
+                        return (
+                            <Link key={index} href="/auth/signup" className="cursor-pointer text-blue-500">
+                                {element}
+                            </Link>
+                        )
+                    })}
+                </div>
+            </section>
             <section className='w-full'>
                 <h2 className='py-4 font-semibold text-2xl'>Other events you may like</h2>
                 <EventSlider />
             </section>
 
-            {/* Popup */}
             {isPopupOpen && (
                 <TicketPopup
                     ticketCount={ticketCount}
@@ -211,7 +201,7 @@ const EventContent = ({ id }) => {
                     showOrderSummary={showOrderSummary}
                     handleProceed={handleProceed}
                     onClose={closePopup}
-                    data={data}  // Pass event data if needed for order summary
+                    data={data}
                 />
             )}
         </div>
