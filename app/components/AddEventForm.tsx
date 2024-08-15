@@ -215,7 +215,7 @@ const AddEventForm = () => {
           onChange={handleChange}
           className="mr-2"
         />
-        <label className="text-gray-700 text-sm font-bold">Apply Children's Fee</label>
+        <label className="text-gray-700 text-sm font-bold">Apply Children&apos;s Fee</label>
       </div>
 
       <div className="mb-4">
