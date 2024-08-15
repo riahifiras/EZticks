@@ -1,11 +1,21 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ChangeEvent, DragEvent } from 'react';
 
-const EventsTable = () => {
-  const [events, setEvents] = useState([]);
-  const [editId, setEditId] = useState(null);
-  const [updatedEvent, setUpdatedEvent] = useState({});
-  const [newImage, setNewImage] = useState(null);
+interface Event {
+  id: string;
+  title: string;
+  location: string;
+  datetime: string;
+  slots: number;
+  ticketprice: number;
+  pic: string;
+}
+
+const EventsTable: React.FC = () => {
+  const [events, setEvents] = useState<Event[]>([]);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [updatedEvent, setUpdatedEvent] = useState<Partial<Event>>({});
+  const [newImage, setNewImage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -21,13 +31,13 @@ const EventsTable = () => {
     fetchEvents();
   }, []);
 
-  const handleEdit = (id, event) => {
+  const handleEdit = (id: string, event: Event) => {
     setEditId(id);
     setUpdatedEvent(event);
     setNewImage(null); 
   };
 
-  const handleSave = async (id) => {
+  const handleSave = async (id: string) => {
     const putUrl = `https://eea5ym4cdf.execute-api.us-east-1.amazonaws.com/dev/events/${id}`;
     
     if (newImage) {
@@ -47,7 +57,7 @@ const EventsTable = () => {
 
         if (response.ok) {
             console.log('Update successful:', response);
-            setEvents(events.map(event => event.id === id ? updatedEvent : event));
+            setEvents(events.map(event => event.id === id ? { ...event, ...updatedEvent } : event));
             setEditId(null);
             setNewImage(null); 
         } else {
@@ -64,31 +74,33 @@ const EventsTable = () => {
     setUpdatedEvent({});
   };
 
-  const handleFieldChange = (e) => {
+  const handleFieldChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUpdatedEvent({ ...updatedEvent, [name]: value });
   };
 
-  const handleImageDrop = (e) => {
+  const handleImageDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
     const reader = new FileReader();
     reader.onloadend = () => {
-      setNewImage(reader.result); 
+      setNewImage(reader.result as string); 
     };
     reader.readAsDataURL(file); 
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setNewImage(reader.result); 
-    };
-    reader.readAsDataURL(file);
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewImage(reader.result as string); 
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = (id: string) => {
     const deleteUrl = `https://eea5ym4cdf.execute-api.us-east-1.amazonaws.com/dev/events/${id}`;
     
     fetch(deleteUrl, {
@@ -197,7 +209,7 @@ const EventsTable = () => {
                       className="h-16 w-16 border border-dashed border-gray-400 rounded-lg flex items-center justify-center mb-2"
                     >
                       {newImage ? (
-                        <img src={newImage} alt={updatedEvent.title} className="h-16 w-16 object-cover rounded-lg" />
+                        <img src={newImage} alt={updatedEvent.title || "New Image"} className="h-16 w-16 object-cover rounded-lg" />
                       ) : (
                         <span>Drag & Drop</span>
                       )}

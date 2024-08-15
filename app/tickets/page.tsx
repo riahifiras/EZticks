@@ -22,7 +22,7 @@ const TicketsPage = () => {
     const [data, setData] = useState<Ticket[]>([]);
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(true);
-    const [expandedTicket, setExpandedTicket] = useState<number | null>(null);
+    const [expandedTicket, setExpandedTicket] = useState<string | null>(null);
 
     const usr = useAuthUser();
     const defaultLayoutPluginInstance = defaultLayoutPlugin();
@@ -50,11 +50,11 @@ const TicketsPage = () => {
         return <div className="p-4">Refresh pls...</div>;
     }
 
-    const handleToggle = (id: number) => {
+    const handleToggle = (id: string) => {
         setExpandedTicket(expandedTicket === id ? null : id);
     };
 
-    const handleDownload = (id: number) => {
+    const handleDownload = (id: string) => {
         const url = `https://ticket-dev-yesss.s3.amazonaws.com/pdfs/ticket-${id}.pdf`;
         const link = document.createElement('a');
         link.href = url;

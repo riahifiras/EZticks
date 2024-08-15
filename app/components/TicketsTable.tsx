@@ -1,16 +1,25 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ChangeEvent, DragEvent } from 'react';
 
-const TicketsTable = () => {
-  const [tickets, setTickets] = useState([]);
-  const [editId, setEditId] = useState(null);
-  const [updatedTicket, setUpdatedTicket] = useState({});
+interface Ticket {
+  id: string;
+  eventName: string;
+  rate: string;
+  issueDate: string;
+  userName: string;
+  ticketPrice: number;
+}
+
+const TicketsTable: React.FC = () => {
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [updatedTicket, setUpdatedTicket] = useState<Partial<Ticket>>({});
 
   useEffect(() => {
     const fetchTickets = async () => {
       try {
         const response = await fetch('https://zkyeza1yt2.execute-api.us-east-1.amazonaws.com/dev/tickets');
-        const data = await response.json();
+        const data: Ticket[] = await response.json();
         setTickets(data);
       } catch (error) {
         console.error('Error fetching tickets:', error);
@@ -20,12 +29,12 @@ const TicketsTable = () => {
     fetchTickets();
   }, []);
 
-  const handleEdit = (id, ticket) => {
+  const handleEdit = (id: string, ticket: Ticket) => {
     setEditId(id);
     setUpdatedTicket(ticket);
   };
 
-  const handleSave = async (id) => {
+  const handleSave = async (id: string) => {
     const putUrl = `https://zkyeza1yt2.execute-api.us-east-1.amazonaws.com/dev/tickets/${id}`;
 
     try {
@@ -39,7 +48,7 @@ const TicketsTable = () => {
 
       if (response.ok) {
         console.log('Update successful:', response);
-        setTickets(tickets.map(ticket => ticket.id === id ? updatedTicket : ticket));
+        setTickets(tickets.map(ticket => ticket.id === id ? { ...ticket, ...updatedTicket } : ticket));
         setEditId(null);
       } else {
         console.error('Error updating ticket:', response.statusText);
@@ -54,26 +63,26 @@ const TicketsTable = () => {
     setUpdatedTicket({});
   };
 
-  const handleFieldChange = (e) => {
+  const handleFieldChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setUpdatedTicket({ ...updatedTicket, [name]: value });
+    setUpdatedTicket(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = (id: string) => {
     const deleteUrl = `https://zkyeza1yt2.execute-api.us-east-1.amazonaws.com/dev/tickets/${id}`;
-    
+
     fetch(deleteUrl, {
-        method: 'DELETE',
+      method: 'DELETE',
     })
-    .then(response => {
+      .then(response => {
         if (!response.ok) {
-            throw new Error('Failed to delete the ticket.');
+          throw new Error('Failed to delete the ticket.');
         }
         setTickets(prevData => prevData.filter(ticket => ticket.id !== id));
-    })
-    .catch(error => {
+      })
+      .catch(error => {
         console.error('Error:', error);
-    });
+      });
   };
 
   return (
@@ -124,7 +133,7 @@ const TicketsTable = () => {
                   <input
                     type="date"
                     name="issueDate"
-                    value={new Date(updatedTicket.issueDate).toISOString().substr(0, 10) || ""}
+                    value={new Date(updatedTicket.issueDate || '').toISOString().substr(0, 10) || ""}
                     onChange={handleFieldChange}
                     className="border border-gray-300 rounded p-1"
                   />
@@ -161,29 +170,29 @@ const TicketsTable = () => {
               <td className="py-3 px-3 text-center">
                 {editId === ticket.id ? (
                   <div>
-                    <button 
-                      onClick={() => handleSave(ticket.id)} 
+                    <button
+                      onClick={() => handleSave(ticket.id)}
                       className="bg-green-500 text-white py-1 px-3 rounded mr-2"
                     >
                       Save
                     </button>
-                    <button 
-                      onClick={handleCancel} 
+                    <button
+                      onClick={handleCancel}
                       className="bg-gray-500 text-white py-1 px-3 rounded"
                     >
                       Cancel
                     </button>
                   </div>
                 ) : (
-                  <button 
-                    onClick={() => handleEdit(ticket.id, ticket)} 
+                  <button
+                    onClick={() => handleEdit(ticket.id, ticket)}
                     className="bg-blue-500 text-white py-1 px-3 rounded mr-2"
                   >
                     Edit
                   </button>
                 )}
-                <button 
-                  onClick={() => handleDelete(ticket.id)} 
+                <button
+                  onClick={() => handleDelete(ticket.id)}
                   className="bg-red-500 text-white py-1 px-3 rounded"
                 >
                   Delete
