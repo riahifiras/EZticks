@@ -52,22 +52,25 @@ const AddEventForm = () => {
   
 
   const addField = (key: keyof EventForm, max: number) => {
-    if (form[key].length < max) {
+    if (Array.isArray(form[key]) && form[key].length < max) {
       setForm((prevForm) => ({
         ...prevForm,
-        [key]: [...prevForm[key], ""],
+        [key]: [...prevForm[key] as string[], ""],
       }));
     }
   };
-
+  
   const removeField = (key: keyof EventForm, index: number) => {
-    const newFields = [...form[key]];
-    newFields.splice(index, 1);
-    setForm((prevForm) => ({
-      ...prevForm,
-      [key]: newFields,
-    }));
+    if (Array.isArray(form[key])) {
+      const newFields = [...form[key] as string[]];
+      newFields.splice(index, 1);
+      setForm((prevForm) => ({
+        ...prevForm,
+        [key]: newFields,
+      }));
+    }
   };
+  
 
   const handleDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
