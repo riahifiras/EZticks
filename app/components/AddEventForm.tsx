@@ -39,16 +39,17 @@ const AddEventForm = () => {
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value, type } = e.target;
+  
+    const newValue = type === "checkbox" ? (e.target as HTMLInputElement).checked : value;
+  
     setForm((prevForm) => ({
       ...prevForm,
-      [name]: type === "checkbox" ? checked : value,
-      ...(type === "number" ? { [name]: parseFloat(value) } : {}),
+      [name]: type === "checkbox" ? newValue : type === "number" ? parseFloat(value) : newValue,
     }));
-
-    console.log(form);
-    
+  
   };
+  
 
   const addField = (key: keyof EventForm, max: number) => {
     if (form[key].length < max) {
