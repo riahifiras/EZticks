@@ -1,10 +1,5 @@
 "use client"
-import Image from "next/image";
 
-import { Container } from "./components/Container";
-
-import heroImg from "./assets/images/hero.png"
-import Link from "next/link";
 import LandingHeader from "./components/LandingHeader";
 import LandingCategories from "./components/LandingCategories";
 import LandingSection from "./components/LandingSection";

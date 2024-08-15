@@ -1,0 +1,39 @@
+/* Hide the default toolbar */
+.rpv-core__inner {
+    display: none;
+}
+
+/* Hide the toolbar in the default layout plugin */
+.rpv-default-layout__toolbar {
+    display: none;
+}
+
+/* Hide the page navigation controls */
+.rpv-default-layout__page-navigation {
+    display: none;
+}
+
+/* Hide the zoom controls */
+.rpv-default-layout__zoom {
+    display: none;
+}
+
+/* Hide the sidebar if present */
+.rpv-default-layout__sidebar {
+    display: none;
+}
+
+/* Hide the search bar */
+.rpv-default-layout__search {
+    display: none;
+}
+
+/* Hide the loading spinner */
+.rpv-core__loading {
+    display: none;
+}
+
+/* Hide any footer elements */
+.rpv-default-layout__footer {
+    display: none;
+}

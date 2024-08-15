@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
 import { Worker, Viewer } from '@react-pdf-viewer/core';
+// Plugins
+import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
+// Import styles
 import '@react-pdf-viewer/core/lib/styles/index.css';
+import '@react-pdf-viewer/default-layout/lib/styles/index.css';
+import '../styles/pdfViewerCustom.css';
+
 import useAuthUser from '../hooks/use-auth-user';
 
 const TicketPopup = ({ ticketCount, setTicketCount, showOrderSummary, handleProceed, onClose, data }) => {
 
     
-
+    const defaultLayoutPluginInstance = defaultLayoutPlugin();
     const user = useAuthUser();
     const [showAuthPrompt, setShowAuthPrompt] = useState(false);
     const [ticketType, setTicketType] = useState('Standard rate');
@@ -23,7 +29,7 @@ const TicketPopup = ({ ticketCount, setTicketCount, showOrderSummary, handleProc
     const handlePayNow = async () => {
         const url = "https://zkyeza1yt2.execute-api.us-east-1.amazonaws.com/dev/tickets";
         const issueDate = new Date().toISOString();
-        const ticketPrice = ticketType === 'Standard rate' ? data.ticketprice : data.ticketprice - (data.discount / 100) * data.ticketPrice;
+        const ticketPrice = ticketType === 'Standard rate' ? data.ticketprice : data.ticketprice - (data.discount / 100) * data.ticketprice;
 
         const requests = Array.from({ length: ticketCount }, () => {
             return fetch(url, {
@@ -63,10 +69,10 @@ const TicketPopup = ({ ticketCount, setTicketCount, showOrderSummary, handleProc
                     <>
                         <h2 className="text-xl font-semibold mb-4">Please log in or sign up to proceed</h2>
                         <div className="flex justify-between">
-                            <a href="/login" className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2">
+                            <a href="/login" className="bg-[#2D2C3C] text-white px-4 py-2 rounded-md mr-2">
                                 Log In
                             </a>
-                            <a href="/signup" className="bg-green-500 text-white px-4 py-2 rounded-md">
+                            <a href="/signup" className="bg-[#FFE047] text-white px-4 py-2 rounded-md">
                                 Sign Up
                             </a>
                         </div>
@@ -96,7 +102,7 @@ const TicketPopup = ({ ticketCount, setTicketCount, showOrderSummary, handleProc
                             min={1}
                             onChange={(e) => setTicketCount(parseInt(e.target.value))}
                         />
-                        <button onClick={proceedClicked} className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2">
+                        <button onClick={proceedClicked} className="bg-[#2D2C3C] text-white px-4 py-2 rounded-md mr-2">
                             Proceed
                         </button>
                         <button onClick={onClose} className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md">
@@ -108,8 +114,8 @@ const TicketPopup = ({ ticketCount, setTicketCount, showOrderSummary, handleProc
                         <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
                         <p>Selected Tickets: {ticketCount}</p>
                         <p>Ticket Type: {ticketType}</p>
-                        <p>Total Price: {ticketCount * data.ticketprice} DT</p>
-                        <button onClick={handlePayNow} className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4">
+                        <p>Total Price: {ticketType === 'Standard rate' ? ticketCount * data.ticketprice : ticketCount * (data.ticketprice - data.ticketprice*(data.discount/100))} DT</p>
+                        <button onClick={handlePayNow} className="bg-[#2D2C3C] text-white px-4 py-2 rounded-md mt-4">
                             Pay Now
                         </button>
                         <button onClick={onClose} className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md mt-2">
@@ -119,14 +125,16 @@ const TicketPopup = ({ ticketCount, setTicketCount, showOrderSummary, handleProc
                 ) : (
                     <>
                         <h2 className="text-xl font-semibold mb-4">Ticket PDF</h2>
-                        <Worker workerUrl={`https://unpkg.com/pdfjs-dist@2.7.570/build/pdf.worker.min.js`}>
-                        <div className="w-full h-64 mb-4 border" ><Viewer fileUrl={pdfUrl} /></div> 
-                            
-                        </Worker>
+                        <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}>
+                                    <Viewer
+                                        fileUrl={pdfUrl}
+                                        plugins={[defaultLayoutPluginInstance]}
+                                    />
+                                </Worker>
                         <a
                             href={pdfUrl}
                             download
-                            className="bg-green-500 text-white px-4 py-2 rounded-md"
+                            className="bg-[#FFE047] text-white px-4 py-2 rounded-md"
                         >
                             Download PDF
                         </a>

@@ -1,7 +1,5 @@
 "use client"
 import React from 'react'
-import Image from 'next/image';
-import party from "../assets/images/party.jpg"
 import { IoTicketSharp } from "react-icons/io5";
 import { useRouter } from 'next/navigation'
 

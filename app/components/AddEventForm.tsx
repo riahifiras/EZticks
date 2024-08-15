@@ -19,7 +19,7 @@ interface EventForm {
   hasChildrensFee: boolean;
 }
 
-const CreateEventPage = () => {
+const AddEventForm = () => {
   const [form, setForm] = useState<EventForm>({
     title: "",
     description: "",
@@ -336,4 +336,4 @@ const CreateEventPage = () => {
   );
 };
 
-export default CreateEventPage;
+export default AddEventForm;

@@ -3,16 +3,29 @@ import { useState, useEffect } from 'react';
 import Nav from '../components/Nav';
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { Worker, Viewer } from '@react-pdf-viewer/core';
+// Plugins
+import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
+// Import styles
 import '@react-pdf-viewer/core/lib/styles/index.css';
+import '@react-pdf-viewer/default-layout/lib/styles/index.css';
+import '../styles/pdfViewerCustom.css';
 import useAuthUser from '../hooks/use-auth-user';
 
 const TicketsPage = () => {
-    const [data, setData] = useState([]);
+    interface Ticket {
+        id: string;
+        eventName: string;
+        ticketPrice: number;
+        // Add other fields as needed
+    }
+    
+    const [data, setData] = useState<Ticket[]>([]);
     const [error, setError] = useState('');
-    const [isLoading, setIsLoading] = useState(true); 
+    const [isLoading, setIsLoading] = useState(true);
     const [expandedTicket, setExpandedTicket] = useState<number | null>(null);
 
     const usr = useAuthUser();
+    const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
 
 
@@ -33,6 +46,10 @@ const TicketsPage = () => {
         return <div className="p-4">Loading...</div>;
     }
 
+    if (error) {
+        return <div className="p-4">Refresh pls...</div>;
+    }
+
     const handleToggle = (id: number) => {
         setExpandedTicket(expandedTicket === id ? null : id);
     };
@@ -47,20 +64,20 @@ const TicketsPage = () => {
 
     const handleDelete = (id) => {
         const deleteUrl = `https://zkyeza1yt2.execute-api.us-east-1.amazonaws.com/dev/tickets/${id}`;
-        
+
         fetch(deleteUrl, {
             method: 'DELETE',
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to delete the event.');
-            }
-            setData(prevData => prevData.filter(event => event.id !== id));
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-      };
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to delete the event.');
+                }
+                setData(prevData => prevData.filter(event => event.id !== id));
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    };
 
     return (
         <div>
@@ -81,9 +98,14 @@ const TicketsPage = () => {
                         </div>
                         {expandedTicket === ticket.id && (
                             <div className='mt-4'>
-                                <Worker workerUrl={`https://unpkg.com/pdfjs-dist@2.7.570/build/pdf.worker.min.js`}>
-                                    <Viewer fileUrl={`https://ticket-dev-yesss.s3.amazonaws.com/pdfs/ticket-${ticket.id}.pdf`} />
+
+                                <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}>
+                                    <Viewer
+                                        fileUrl={`https://ticket-dev-yesss.s3.amazonaws.com/pdfs/ticket-${ticket.id}.pdf`}
+                                        plugins={[defaultLayoutPluginInstance]}
+                                    />
                                 </Worker>
+
                                 <div className='mt-4 flex gap-4'>
                                     <button
                                         onClick={() => handleDownload(ticket.id)}
