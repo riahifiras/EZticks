@@ -47,7 +47,6 @@ const TicketsTable: React.FC = () => {
       });
 
       if (response.ok) {
-        console.log('Update successful:', response);
         setTickets(tickets.map(ticket => ticket.id === id ? { ...ticket, ...updatedTicket } : ticket));
         setEditId(null);
       } else {

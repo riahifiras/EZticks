@@ -36,6 +36,8 @@ const AddEventForm = () => {
     hasChildrensFee: false,
   });
 
+  const [isLoading, setIsLoading] = useState(false); // New loading state
+
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
@@ -47,7 +49,6 @@ const AddEventForm = () => {
       ...prevForm,
       [name]: type === "checkbox" ? newValue : type === "number" ? parseFloat(value) : newValue,
     }));
-  
   };
   
 
@@ -103,7 +104,9 @@ const AddEventForm = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setIsLoading(true); 
     const eventId = uuidv4();
+    setForm((prevForm) => ({ ...prevForm, duration: form.duration * 60 }));
     const { hasChildrensFee, ...eventData } = form;
     const eventDataWithId = { id: eventId, ...eventData };
 
@@ -126,6 +129,9 @@ const AddEventForm = () => {
       }
     } catch (error) {
       console.error("Error:", error);
+      alert("An error occurred. Please try again.");
+    } finally {
+      setIsLoading(false); // Set loading state to false regardless of the outcome
     }
   };
 
@@ -164,7 +170,7 @@ const AddEventForm = () => {
         />
       </div>
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2">Duration (minutes):</label>
+        <label className="block text-gray-700 text-sm font-bold mb-2">Duration (hours):</label>
         <input
           type="number"
           name="duration"
@@ -333,8 +339,12 @@ const AddEventForm = () => {
         />
       </div>
 
-      <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded-md">
-        Create Event
+      <button
+        type="submit"
+        className={`bg-blue-500 text-white py-2 px-4 rounded-md ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+        disabled={isLoading} // Disable button when loading
+      >
+        {isLoading ? "Creating..." : "Create Event"} {/* Change button text based on loading state */}
       </button>
     </form>
   );

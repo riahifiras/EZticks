@@ -12,7 +12,6 @@ import {
   Legend,
 } from 'chart.js';
 
-// Register Chart.js components
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -31,7 +30,6 @@ const SalesStatistics = () => {
   useEffect(() => {
     const fetchTickets = async () => {
       try {
-        const response = await fetch('https://zkyeza1yt2.execute-api.us-east-1.amazonaws.com/dev/tickets/');
         const data = await response.json();
         setTickets(data);
         setLoading(false);
@@ -45,7 +43,6 @@ const SalesStatistics = () => {
 
   if (loading) return <div>Loading...</div>;
 
-  // Calculate statistics
   const revenueOverTime = {};
   const ticketsSoldByEvent = {};
   const revenueByEvent = {};
@@ -54,42 +51,36 @@ const SalesStatistics = () => {
   let totalRevenue = 0;
 
   tickets.forEach(ticket => {
-    const date = new Date(ticket.issueDate).toISOString().split('T')[0]; // Extract YYYY-MM-DD
+    const date = new Date(ticket.issueDate).toISOString().split('T')[0]; 
     const { ticketPrice, eventName, rate } = ticket;
 
-    // Revenue over time
     if (revenueOverTime[date]) {
       revenueOverTime[date] += ticketPrice;
     } else {
       revenueOverTime[date] = ticketPrice;
     }
 
-    // Tickets sold by event
     if (ticketsSoldByEvent[eventName]) {
       ticketsSoldByEvent[eventName] += 1;
     } else {
       ticketsSoldByEvent[eventName] = 1;
     }
 
-    // Revenue by event
     if (revenueByEvent[eventName]) {
       revenueByEvent[eventName] += ticketPrice;
     } else {
       revenueByEvent[eventName] = ticketPrice;
     }
 
-    // Ticket type distribution
     if (ticketTypeDistribution[rate]) {
       ticketTypeDistribution[rate] += ticketPrice;
     } else {
       ticketTypeDistribution[rate] = ticketPrice;
     }
 
-    // Total revenue calculation
     totalRevenue += ticketPrice;
   });
 
-  // Prepare data for charts
   const revenueChart = {
     labels: Object.keys(revenueOverTime),
     datasets: [
@@ -106,7 +97,7 @@ const SalesStatistics = () => {
   const revenueChartOptions = {
     scales: {
       x: {
-        reverse: true, // Reverse the x-axis
+        reverse: true,
       },
     },
   };

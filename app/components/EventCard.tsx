@@ -45,7 +45,6 @@ function formatTime(hours, minutes) {
 }
 
 const EventCard = ({event}) => {
-  console.log(event);
   
   const router = useRouter()
   return (

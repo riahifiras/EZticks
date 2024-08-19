@@ -101,7 +101,6 @@ const EventContent = ({ id }) => {
         setShowOrderSummary(true);
     };
 
-    console.log(data.discount);
 
 
     return (
@@ -182,7 +181,7 @@ const EventContent = ({ id }) => {
                 <div className='flex flex-col gap-2'>
                     {data.links.map((element, index) => {
                         return (
-                            <Link key={index} href="/auth/signup" className="cursor-pointer text-blue-500">
+                            <Link key={index} target='_blank' href={element} className="cursor-pointer text-blue-500">
                                 {element}
                             </Link>
                         )

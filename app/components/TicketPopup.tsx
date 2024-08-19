@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { Worker, Viewer } from '@react-pdf-viewer/core';
-// Plugins
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
-// Import styles
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import '../styles/pdfViewerCustom.css';
@@ -10,13 +8,12 @@ import '../styles/pdfViewerCustom.css';
 import useAuthUser from '../hooks/use-auth-user';
 
 const TicketPopup = ({ ticketCount, setTicketCount, showOrderSummary, handleProceed, onClose, data }) => {
-
-    
     const defaultLayoutPluginInstance = defaultLayoutPlugin();
     const user = useAuthUser();
     const [showAuthPrompt, setShowAuthPrompt] = useState(false);
     const [ticketType, setTicketType] = useState('Standard rate');
     const [pdfUrl, setPdfUrl] = useState(null);
+    const [isLoading, setIsLoading] = useState(false); 
 
     const proceedClicked = () => {
         if (!user) {
@@ -27,6 +24,7 @@ const TicketPopup = ({ ticketCount, setTicketCount, showOrderSummary, handleProc
     };
 
     const handlePayNow = async () => {
+        setIsLoading(true); 
         const url = "https://zkyeza1yt2.execute-api.us-east-1.amazonaws.com/dev/tickets";
         const issueDate = new Date().toISOString();
         const ticketPrice = ticketType === 'Standard rate' ? data.ticketprice : data.ticketprice - (data.discount / 100) * data.ticketprice;
@@ -59,6 +57,8 @@ const TicketPopup = ({ ticketCount, setTicketCount, showOrderSummary, handleProc
         } catch (error) {
             console.error('Error purchasing tickets:', error);
             alert('There was an error processing your request. Please try again.');
+        } finally {
+            setIsLoading(false); 
         }
     };
 
@@ -69,10 +69,10 @@ const TicketPopup = ({ ticketCount, setTicketCount, showOrderSummary, handleProc
                     <>
                         <h2 className="text-xl font-semibold mb-4">Please log in or sign up to proceed</h2>
                         <div className="flex justify-between">
-                            <a href="/login" className="bg-[#2D2C3C] text-white px-4 py-2 rounded-md mr-2">
+                            <a href="auth/login" className="bg-[#2D2C3C] text-white px-4 py-2 rounded-md mr-2">
                                 Log In
                             </a>
-                            <a href="/signup" className="bg-[#FFE047] text-white px-4 py-2 rounded-md">
+                            <a href="auth/signup" className="bg-[#FFE047] text-white px-4 py-2 rounded-md">
                                 Sign Up
                             </a>
                         </div>
@@ -91,8 +91,7 @@ const TicketPopup = ({ ticketCount, setTicketCount, showOrderSummary, handleProc
                                 className="border border-gray-300 p-2 w-full"
                             >
                                 <option value="Standard rate">Standard rate</option>
-                                {data.discount !== 0 ? <option value="Children's rate">Children&apos;s rate</option> : <></>}
-                                
+                                {data.discount !== 0 ? <option value="Children's rate">Children&apos;s rate</option> : null}
                             </select>
                         </div>
                         <input
@@ -115,8 +114,12 @@ const TicketPopup = ({ ticketCount, setTicketCount, showOrderSummary, handleProc
                         <p>Selected Tickets: {ticketCount}</p>
                         <p>Ticket Type: {ticketType}</p>
                         <p>Total Price: {ticketType === 'Standard rate' ? ticketCount * data.ticketprice : ticketCount * (data.ticketprice - data.ticketprice*(data.discount/100))} DT</p>
-                        <button onClick={handlePayNow} className="bg-[#2D2C3C] text-white px-4 py-2 rounded-md mt-4">
-                            Pay Now
+                        <button 
+                            onClick={handlePayNow} 
+                            className={`bg-[#2D2C3C] text-white px-4 py-2 rounded-md mt-4 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`} 
+                            disabled={isLoading} 
+                        >
+                            {isLoading ? 'Processing...' : 'Pay Now'}
                         </button>
                         <button onClick={onClose} className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md mt-2">
                             Close
@@ -126,11 +129,11 @@ const TicketPopup = ({ ticketCount, setTicketCount, showOrderSummary, handleProc
                     <>
                         <h2 className="text-xl font-semibold mb-4">Ticket PDF</h2>
                         <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}>
-                                    <Viewer
-                                        fileUrl={pdfUrl}
-                                        plugins={[defaultLayoutPluginInstance]}
-                                    />
-                                </Worker>
+                            <Viewer
+                                fileUrl={pdfUrl}
+                                plugins={[defaultLayoutPluginInstance]}
+                            />
+                        </Worker>
                         <a
                             href={pdfUrl}
                             download

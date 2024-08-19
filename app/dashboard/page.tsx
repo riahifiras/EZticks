@@ -19,7 +19,7 @@ const Dashboard = () => {
       case "statistics":
         return <SalesStatistics/>
       default:
-        return <TicketsTable />; // Fallback option
+        return <TicketsTable />; 
     }
   };
 

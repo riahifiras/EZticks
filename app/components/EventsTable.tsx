@@ -44,7 +44,6 @@ const EventsTable: React.FC = () => {
         updatedEvent.pic = newImage;
     }
 
-    console.log('Updated Event:', updatedEvent);  
 
     try {
         const response = await fetch(putUrl, {
@@ -56,7 +55,6 @@ const EventsTable: React.FC = () => {
         });
 
         if (response.ok) {
-            console.log('Update successful:', response);
             setEvents(events.map(event => event.id === id ? { ...event, ...updatedEvent } : event));
             setEditId(null);
             setNewImage(null); 

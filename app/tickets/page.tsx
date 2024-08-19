@@ -3,9 +3,7 @@ import { useState, useEffect } from 'react';
 import Nav from '../components/Nav';
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { Worker, Viewer } from '@react-pdf-viewer/core';
-// Plugins
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
-// Import styles
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import '../styles/pdfViewerCustom.css';
@@ -16,7 +14,6 @@ const TicketsPage = () => {
         id: string;
         eventName: string;
         ticketPrice: number;
-        // Add other fields as needed
     }
     
     const [data, setData] = useState<Ticket[]>([]);
@@ -27,13 +24,15 @@ const TicketsPage = () => {
     const usr = useAuthUser();
     const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
-
-
     useEffect(() => {
         fetch(`https://zkyeza1yt2.execute-api.us-east-1.amazonaws.com/dev/user?userId=${usr?.userId}`)
             .then(response => response.json())
             .then((data) => {
-                setData(data);
+                if (Array.isArray(data)) {
+                    setData(data);
+                } else {
+                    setData([]); 
+                }
                 setIsLoading(false);
             })
             .catch((error: Error) => {
@@ -47,7 +46,11 @@ const TicketsPage = () => {
     }
 
     if (error) {
-        return <div className="p-4">Refresh pls...</div>;
+        return <div className="p-4">Error: {error}. Refresh please.</div>;
+    }
+
+    if (data.length === 0) {
+        return <div className="p-4">No tickets available.</div>;
     }
 
     const handleToggle = (id: string) => {
@@ -62,7 +65,7 @@ const TicketsPage = () => {
         link.click();
     };
 
-    const handleDelete = (id) => {
+    const handleDelete = (id: string) => {
         const deleteUrl = `https://zkyeza1yt2.execute-api.us-east-1.amazonaws.com/dev/tickets/${id}`;
 
         fetch(deleteUrl, {
@@ -98,7 +101,6 @@ const TicketsPage = () => {
                         </div>
                         {expandedTicket === ticket.id && (
                             <div className='mt-4'>
-
                                 <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}>
                                     <Viewer
                                         fileUrl={`https://ticket-dev-yesss.s3.amazonaws.com/pdfs/ticket-${ticket.id}.pdf`}

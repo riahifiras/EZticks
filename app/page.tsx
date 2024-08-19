@@ -10,6 +10,8 @@ import Footer from "./components/Footer";
 import Nav from "./components/Nav";
 import { useEffect, useState } from "react";
 
+
+
 export interface Event {
   title: string;
   description: string;
