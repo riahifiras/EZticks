@@ -3,7 +3,6 @@
 import LandingHeader from "./components/LandingHeader";
 import LandingCategories from "./components/LandingCategories";
 import LandingSection from "./components/LandingSection";
-import LandingCTA from "./components/LandingCTA";
 import LandingGettingStarted from "./components/LandingGettingStarted";
 import LandingNewsletter from "./components/LandingNewsletter";
 import Footer from "./components/Footer";
@@ -61,7 +60,6 @@ export default function Home() {
         <LandingSection data={data.slice(0, 6)} title={"Discover Best of Online Events"}/>
         <LandingSection data={data.slice(0, 6)} title={"Trending Events Around the World"}/>
         </div>
-        <LandingCTA/>
         <LandingNewsletter/>
         <Footer/>
     </>
