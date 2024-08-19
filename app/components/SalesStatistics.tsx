@@ -12,6 +12,7 @@ import {
   Legend,
 } from 'chart.js';
 
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -30,6 +31,7 @@ const SalesStatistics = () => {
   useEffect(() => {
     const fetchTickets = async () => {
       try {
+        const response = await fetch('https://zkyeza1yt2.execute-api.us-east-1.amazonaws.com/dev/tickets/');
         const data = await response.json();
         setTickets(data);
         setLoading(false);
@@ -43,6 +45,7 @@ const SalesStatistics = () => {
 
   if (loading) return <div>Loading...</div>;
 
+  // Calculate statistics
   const revenueOverTime = {};
   const ticketsSoldByEvent = {};
   const revenueByEvent = {};
